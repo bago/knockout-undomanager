@@ -7,12 +7,31 @@ KO-UndoManager also detects move operations (removed+added operations for the sa
 ##Usage
 
 ```js
+
+      var viewModel = {
+         ...
+         // the subtree we want to track
+         content: {
+           ... the observables tree ...
+         }
+         ...
+      };
+
       var undoRedoStack = ko.undoManager(viewModel.content, { levels: 10, undoLabel: "undo (#COUNT#)", redoLabel: "redo" });
       viewModel.undo = undoRedoStack.undoCommand;
       viewModel.redo = undoRedoStack.redoCommand;
 ```
 
-And then (this makes use of [Knockout-Jqueryui](http://gvas.github.io/knockout-jqueryui/):
+And then:
+
+```html
+      <div id="toolbar">
+        <a href="#" data-bind="if: $root.undo.enabled(), click: $root.undo.execute, text: $root.undo.name">UNDO</a>
+        <a href="#" data-bind="if: $root.redo.enabled(), click: $root.redo.execute, text: $root.redo.name">REDO</a>
+      </div>
+```
+
+Or using [Knockout-Jqueryui](http://gvas.github.io/knockout-jqueryui/):
 
 ```html
       <div id="toolbar">
