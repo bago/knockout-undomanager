@@ -3,19 +3,18 @@
 // requires "ko.watch" method from knockout.reactor-1.2.0-beta.js
 (function (factory) {
 	// Module systems magic dance.
-	// jQuery is only required for the options "$.extend"
 
 	if (typeof require === "function" && typeof exports === "object" && typeof module === "object") {
 		// CommonJS or Node: hard-coded dependency on "knockout"
-		factory(require("jquery"), require("knockout"), exports);
+		factory(require("knockout"), exports);
 	} else if (typeof define === "function" && define["amd"]) {
 		// AMD anonymous module with hard-coded dependency on "knockout"
-		define(["jquery", "knockout", "exports"], factory);
+		define(["knockout", "exports"], factory);
 	} else {
 		// <script> tag: use the global `ko` object
-		factory(jQuery, ko, ko);
+		factory(ko, ko);
 	}
-}(function ($, ko, exports) { 
+}(function (ko, exports) { 
 	
   /// <summary>
   ///     Track last "levels" changes within the chained observable down to any given level and
@@ -41,7 +40,7 @@
   	};
   	
     if (typeof options == 'object') {
-      options = $.extend(defaultOptions, options);
+      options = ko.utils.extend(defaultOptions, options);
     } else {
       options = defaultOptions;
     }
