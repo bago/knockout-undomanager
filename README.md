@@ -43,4 +43,4 @@ Or using [Knockout-Jqueryui](http://gvas.github.io/knockout-jqueryui/):
 ##License
 
 Copyright (c) 2014 Stefano Bagnara.
-evol.colorpicker is released under the [MIT license](http://github.com/bago/knockout-undomanager/raw/master/LICENSE.md).
+Knockout UndoManager is released under the [MIT license](http://github.com/bago/knockout-undomanager/raw/master/LICENSE.md).
