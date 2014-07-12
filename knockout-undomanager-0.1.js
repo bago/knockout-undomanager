@@ -88,7 +88,7 @@
   		}
   	};
   	
-    ko.watch(model, { depth: -1, keepOldValues: 1 }, function(stackpush, parents, child, item) {
+    ko.watch(model, { depth: -1, keepOldValues: 1, mutable: true }, function(stackpush, parents, child, item) {
     	if (child.oldValues) {
       	stackpush(child.bind(child, child.oldValues[0]));
       } else if (item) {
