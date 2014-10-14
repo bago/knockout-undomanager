@@ -1,10 +1,9 @@
 {
   "name": "knockout-undomanager",
   "homepage": "https://github.com/bago/knockout-undomanager",
-  "ignore": [ "**/.*" ],
-  "main": [ "knockout-undomanager-0.1.js" ],
+  "main": ["knockout-undomanager-0.1.js"],
   "dependencies": {
-    "ZiadJ/knockoutjs-reactor": ">=0.0.0",
+    "knockoutjs-reactor": ">=0.0.0",
     "knockout": ">=3.0.0"
   }
 }
