@@ -1,0 +1,9 @@
+{
+  "name": "knockout-undomanager",
+  "homepage": "https://github.com/bago/knockout-undomanager",
+  "main": ["knockout-undomanager-0.1.js"],
+  "dependencies": [
+    "knockout",
+    "knockoutjs-reactor"
+  ]
+}
