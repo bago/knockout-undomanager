@@ -84,6 +84,7 @@
   					action();
   					state = prevState;
   				}
+  				return true;
   			}
   		}
   	};
@@ -102,7 +103,7 @@
       		act.mergedAction = function(oldChild, oldItem, newAction) {
       	    // a deleted action is able to merge with a added action if they apply to the same
       	    // object.
-      			if (newAction.mergeableMove != undefined && oldItem.value == newAction.mergeableMove.item.value) {
+      			if (typeof newAction.mergeableMove == 'object' && oldItem.value == newAction.mergeableMove.item.value) {
       				// in this case I simply return a single action running both actions in sequence,
       				// this way the "undo" will need to undo only once for a "move" operation.
       				return (function(funcs) {
@@ -114,6 +115,8 @@
       		stackpush(act);
       	} else if (item.status == 'added') {
       		var act = child.splice.bind(child, item.index, 1);
+      		// add a mergeableMove property that will be used by the next action "mergedAction" to see if this action
+      		// can be merged.
       		act.mergeableMove = { child: child, item: item };
       		stackpush(act);
       	}
@@ -123,7 +126,8 @@
 		return {
 			push: _push, 
 			undoCommand: _xdoCommand(options.undoLabel, STATE_UNDOING, undoStack),
-			redoCommand: _xdoCommand(options.redoLabel, STATE_REDOING, redoStack)
+			redoCommand: _xdoCommand(options.redoLabel, STATE_REDOING, redoStack),
+			reset: function() { undoStack.removeAll(); redoStack.removeAll(); }
 		};
   };
   
