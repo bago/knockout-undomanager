@@ -195,7 +195,12 @@
       // oggetti serializzabili invece di funzioni.
       // if (typeof oldVal === 'object' || typeof oldVal === 'function') oldVal = ko.toJS(oldVal);
       // if (typeof item !== 'undefined' && (typeof item.value === 'object' || typeof item.value === 'function')) item.value = ko.toJS(item.value);
-      return makeDereferencedUndoAction.bind(undefined, model, _getPath(parents, child), oldVal, item);
+      try {
+        var path = _getPath(parents, child);
+        return makeDereferencedUndoAction.bind(undefined, model, path, oldVal, item);
+      } catch (e) {
+        console.log("TODO Exception processing undo", e, parents, child, item);
+      }
     };
 
     var makeUndoActionDefault = function(parents, child, item) {
@@ -233,7 +238,7 @@
             path += "["+pos+"]";
           } else {
             // TODO log/exception
-            console.log("Unexpected object not found in parent array", parentArray, p);
+            console.log("Unexpected object not found in parent array", parentArray, p, k, parents.length);
             throw "Unexpected object not found in parent array";
           }
         } else {
@@ -259,54 +264,58 @@
       if (mode == MODE_MERGE) {
         // console.log("UR", "mergemode");
         act = makeUndoAction(parents, child, item);
-        act.mergedAction = function(newAction) {
-          if (typeof newAction.mergeMe !== 'undefined' && newAction.mergeMe) {
-            return _combinedFunction(newAction, this);
-          } else return null;
-        };
-        act.mergeMe = true;
+        if (typeof act !== 'undefined') {
+          act.mergedAction = function(newAction) {
+            if (typeof newAction.mergeMe !== 'undefined' && newAction.mergeMe) {
+              return _combinedFunction(newAction, this);
+            } else return null;
+          };
+          act.mergeMe = true;
+        }
       } else {
         act = makeUndoAction(parents, child, item);
-        if (child.oldValues && mode == MODE_ONCE) {
-          act.mergedAction = function(oldChild, oldItem, newAction) {
-            if (typeof newAction.mergeableAction == 'object' && oldChild == newAction.mergeableAction.child) {
-              // console.log("UR", "ignore update for property in MODE_ONCE");
-              return this;
-            } else return null;
-          }.bind(act, child, item);
-          act.mergeableAction = { child: child, item: item };
-        }
-        // console.log("UR", "item.status", item.status);
-      	// "item" is valued when an item is added/removed/reteined in an array
-      	// sometimes KO detect "moves" and add a "moved" property with the index but
-      	// this doesn't happen for example using knockout-sortable or when moving objects
-      	// between arrays.
-      	// So this ends up handling this with "mergeableMove" and "mergedAction": 
-      	if (item && item.status == 'deleted') {
-          // TODO se sono in MODE = MERGE devo metteer una funzione di merge che accetta tutto.
-          // altrimenti lascio questa.
-      		act.mergedAction = function(oldChild, oldItem, newAction) {
-            // console.log("UR", "act.mergedAction", typeof newAction.mergeableMove);
-      	    // a deleted action is able to merge with a added action if they apply to the same
-      	    // object.
-      			if (typeof newAction.mergeableMove == 'object' && oldItem.value == newAction.mergeableMove.item.value) {
-      				// in this case I simply return a single action running both actions in sequence,
-      				// this way the "undo" will need to undo only once for a "move" operation.
-      				return _combinedFunction(newAction, this);
-      			} else {
-              console.log("UR", "not mergeable", typeof newAction.mergeableMove);
-            }
+        if (typeof act !== 'undefined') {
+          if (child.oldValues && mode == MODE_ONCE) {
+            act.mergedAction = function(oldChild, oldItem, newAction) {
+              if (typeof newAction.mergeableAction == 'object' && oldChild == newAction.mergeableAction.child) {
+                // console.log("UR", "ignore update for property in MODE_ONCE");
+                return this;
+              } else return null;
+            }.bind(act, child, item);
+            act.mergeableAction = { child: child, item: item };
+          }
+          // console.log("UR", "item.status", item.status);
+        	// "item" is valued when an item is added/removed/reteined in an array
+        	// sometimes KO detect "moves" and add a "moved" property with the index but
+        	// this doesn't happen for example using knockout-sortable or when moving objects
+        	// between arrays.
+        	// So this ends up handling this with "mergeableMove" and "mergedAction": 
+        	if (item && item.status == 'deleted') {
+            // TODO se sono in MODE = MERGE devo metteer una funzione di merge che accetta tutto.
+            // altrimenti lascio questa.
+        		act.mergedAction = function(oldChild, oldItem, newAction) {
+              // console.log("UR", "act.mergedAction", typeof newAction.mergeableMove);
+        	    // a deleted action is able to merge with a added action if they apply to the same
+        	    // object.
+        			if (typeof newAction.mergeableMove == 'object' && oldItem.value == newAction.mergeableMove.item.value) {
+        				// in this case I simply return a single action running both actions in sequence,
+        				// this way the "undo" will need to undo only once for a "move" operation.
+        				return _combinedFunction(newAction, this);
+        			} else {
+                console.log("UR", "not mergeable", typeof newAction.mergeableMove);
+              }
 
-      			return null;
-      		}.bind(act, child, item);
-      	}
-        if (item && item.status == 'added') {
-      		// add a mergeableMove property that will be used by the next action "mergedAction" to see if this action
-      		// can be merged.
-      		act.mergeableMove = { child: child, item: item };
+        			return null;
+        		}.bind(act, child, item);
+        	}
+          if (item && item.status == 'added') {
+        		// add a mergeableMove property that will be used by the next action "mergedAction" to see if this action
+        		// can be merged.
+        		act.mergeableMove = { child: child, item: item };
+          }
         }
       }
-      _push(act);
+      if (typeof act !== 'undefined') _push(act);
     };
 
     ko.watch(model, { depth: -1, oldValues: 1, mutable: true, /* tagParentsWithName: true */ tagFields: true }, changePusher);
