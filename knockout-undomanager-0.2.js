@@ -172,7 +172,7 @@
     var makeDereferencedUndoAction = function(model, path, value, item) {
       var child = _reference(model, path);
       // console.log("ACT", path, value, item);
-      if (value) {
+      if (typeof value !== 'undefined') {
         child(value);
       } else if (item) {
         if (item.status == 'deleted') {
@@ -183,7 +183,7 @@
           throw "Unsupproted item.status: "+item.status;
         }
       } else {
-        throw "Unexpected condition: no item and no child.oldValues!";
+        throw "Unexpected condition: no item and no child.oldValues! path["+path+"] value["+value+"]";
       }
     };
 
