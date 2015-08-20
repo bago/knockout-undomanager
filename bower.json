@@ -2,7 +2,7 @@
   "name": "knockout-undomanager",
   "homepage": "https://github.com/bago/knockout-undomanager",
   "ignore": [ "**/.*" ],
-  "main": [ "knockout-undomanager-0.1.js" ],
+  "main": [ "knockout-undomanager.js" ],
   "dependencies": {
     "knockout": ">=3.0.0"
   }
