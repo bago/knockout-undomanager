@@ -4,6 +4,8 @@ KO-UndoManager
 A [KnockoutJS](http://knockoutjs.com/) plugin relying on the [KO-Reactor](https://github.com/ZiadJ/knockoutjs-reactor) library to provide multilevel undo/redo management for the whole viewModel. Undo/redo stacks keeps only changes (functions to set the previous value in the observable) limiting the needed memory.
 KO-UndoManager also detects move operations (removed+added operations for the same object) and merge them to a single operation so that you don't have to undo twice to undo a move to/in/between observable arrays.
 
+Currently this works with [knockout-reactor-beta 1.3.6](https://github.com/bago/knockoutjs-reactor/tree/mosaico)
+
 ##Usage
 
 ```js
@@ -42,5 +44,5 @@ Or using [Knockout-Jqueryui](http://gvas.github.io/knockout-jqueryui/):
 
 ##License
 
-Copyright (c) 2014 Stefano Bagnara.
+Copyright (c) 2015 Stefano Bagnara.
 Knockout UndoManager is released under the [MIT license](http://github.com/bago/knockout-undomanager/raw/master/LICENSE.md).
