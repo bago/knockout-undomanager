@@ -46,3 +46,9 @@ Or using [Knockout-Jqueryui](http://gvas.github.io/knockout-jqueryui/):
 
 Copyright (c) 2015 Stefano Bagnara.
 Knockout UndoManager is released under the [MIT license](http://github.com/bago/knockout-undomanager/raw/master/LICENSE.md).
+
+## Known users
+
+[voidlabs/mosaico](https://github.com/voidlabs/mosaico) is the first opensource Email Template Editor of its kind. Knockout-Undomanager has been developed inside Mosaico and then extracted to a more generic library.
+
+Please let me know if you use Knockout-Undomanager in your project!
