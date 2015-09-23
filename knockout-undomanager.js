@@ -89,7 +89,7 @@
     var _xdoCommand = function(label, workState, stack) {
       return {
         name: ko.computed(function() {
-          return label.replace(/#COUNT#/, stack().length);
+          return ko.utils.unwrapObservable(label).replace(/#COUNT#/, stack().length);
         }),
         enabled: ko.computed(function() {
           return stack().length !== 0;
